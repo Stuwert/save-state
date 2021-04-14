@@ -4,7 +4,8 @@ import GameBoard from './GameBoard';
 
 
 function App() {
-return <div className="flex justify-center">
+return <div className="flex flex-col">
+  <h1 className="text-xl self-center">Tic Tac Toe</h1>
   <GameBoard />
 </div>
 }
