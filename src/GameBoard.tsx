@@ -12,8 +12,8 @@ export default function GameBoard () {
         <div className="flex flex-col">
           {startingGameState.map( (gameRow, xAxis) => {
             return (
-              <div className="flex flex-row justify-center">
-                {gameRow.map( (gameValue, yAxis) => <GameButton gameValue={gameValue} coordinates={[xAxis, yAxis]} /> )}
+              <div className="flex flex-row justify-center" key={xAxis}>
+                {gameRow.map( (gameValue, yAxis) => <GameButton gameValue={gameValue} coordinates={[xAxis, yAxis]} key={[xAxis, yAxis].join(' ')} /> )}
               </div>
             )
           })}

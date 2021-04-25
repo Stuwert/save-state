@@ -1,10 +1,8 @@
-import { createMachine, actions } from 'xstate';
+import { createMachine } from 'xstate';
 
-const { escalate } = actions;
-
-export default function makeDroughTile(id: [number, number]) {
+export default function makeDroughtTile(id: [number, number]) {
     return createMachine({
-        id: '1', // This will have to be dynamic based on invocation
+        id: id.join(' '), // This will have to be dynamic based on invocation
         initial: 'empty',
         states: {
             empty: {
@@ -15,25 +13,27 @@ export default function makeDroughTile(id: [number, number]) {
             },
             X: {
                 type: 'final',
-                on: {
-                    X: {
-                        actions: escalate('Invoking call on final type')
-                    },
-                    O: {
-                        actions: escalate('Invoking call on final type')
-                    }
-                }
+                // So it looks like I don't actually need these, I would just need to capture that error, and then 
+                // bubble it up inside the game state on the "load" action
+                // on: {
+                //     X: {
+                //         actions: escalate('Invoking call on final type')
+                //     },
+                //     O: {
+                //         actions: escalate('Invoking call on final type')
+                //     }
+                // }
             },
             O: {
                 type: 'final',
-                on: {
-                    X: {
-                        actions: escalate('Invoking call on final type')
-                    },
-                    O: {
-                        actions: escalate('Invoking call on final type')
-                    }
-                }
+                // on: {
+                //     X: {
+                //         actions: escalate('Invoking call on final type')
+                //     },
+                //     O: {
+                //         actions: escalate('Invoking call on final type')
+                //     }
+                // }
             }  
         }
         

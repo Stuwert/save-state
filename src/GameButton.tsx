@@ -21,7 +21,7 @@ export default function GameButton({ gameValue, coordinates }: { gameValue: stri
 
    return (
       <button 
-         className="w-24 h-24 m-2 rounded shadow-lg bg-gray-50 border-2 border-black hover:bg-black focus:bg-black"
+         className="w-24 h-24 m-2 rounded shadow-lg bg-gray-50 border-2 border-black hover:bg-white focus:bg-white"
          onClick={() => send('X')}
       >
          {getValue(current)}

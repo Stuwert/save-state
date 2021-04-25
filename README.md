@@ -2,6 +2,23 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Requirements
+
+- This should be fault tolerant, if the game is given an incorrect series of commands to start, it should error
+- The game should be playable by either two people or by one player and an "AI"
+- The game should have arbitrary start conditions. It should be able to accept multiple different potential draughts starting positions
+- 
+
+## Technologies
+
+- 
+
+## TODO:
+
+1. Set up tests for the components
+2. Set up tests for the game states
+3.  
+
 ## Available Scripts
 
 In the project directory, you can run:
