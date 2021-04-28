@@ -2,6 +2,14 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+The goal of this project is to build a few different skills in areas that I don't have much experience with by building out a small game prototype. The game is draughts or Tic-Tac-Toe and the goal is to create a state parameter by which the game can be shared and replayed by different people via a share link. 
+
+### Technologies Used
+- Tailwind CSS
+- Create React App
+- Typescript
+- Xstate
+
 ## Requirements
 
 - This should be fault tolerant, if the game is given an incorrect series of commands to start, it should error
@@ -9,15 +17,20 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - The game should have arbitrary start conditions. It should be able to accept multiple different potential draughts starting positions
 - 
 
-## Technologies
-
-- 
 
 ## TODO:
 
-1. Set up tests for the components
-2. Set up tests for the game states
-3.  
+- [] Set up tests for components
+    - [] Figure out which test set up this uses
+    - [] Figure out how to validate that stuff exists in the component
+    - [] Write some tests
+- [x] Set up tests for the game states
+    - [x] Figure out how the state machine set up works
+    - [x] Get test functioning for drought tile
+    - [] get test functioning for parent game state
+- [] The game should display the current players turn
+- [] After one player takes their turn the game state should change whose turn it is
+- [] X-state machine should use types
 
 ## Available Scripts
 
