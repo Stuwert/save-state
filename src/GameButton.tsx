@@ -1,30 +1,35 @@
-import React from 'react';
-import { useMachine } from '@xstate/react';
-import makeDroughtTile from './gameState/tile';
-import { State } from 'xstate';
+import React from "react";
+import { TileStateMachine } from "./gameState/tile";
+// import { State } from "xstate";
+import { useSelector } from "@xstate/react";
+import { ActorRef } from "@xstate/react/lib/types";
 
-function getValue(current: State<any>): 'X' | 'O' | null {
-   if (current.matches('X')) return 'X';
-   if (current.matches('Y')) return 'O';
+const selectStateValue = (state: any): string => state.value;
+const compareStateValue = (
+  prevStateValue: string,
+  nextStateValue: string
+): boolean => prevStateValue === nextStateValue;
 
-   return null;
-}
+export default function GameButton({
+  takeTurnAction,
+  coordinates,
+  tileStateMachine,
+}: {
+  takeTurnAction: Function; // There's a lot of complicated typing under the hood already being handled by the send function
+  tileStateMachine: ActorRef<any, any>;
+  coordinates: string;
+}) {
+  const value = useSelector(tileStateMachine, (state) => state.value);
 
-export default function GameButton({ gameValue, coordinates }: { gameValue: string; coordinates: [number, number] }) {
-   const tileStateMachine = makeDroughtTile(coordinates);
-   
-   const [current, send] = useMachine(tileStateMachine);
+  const isEmpty = value === "empty";
 
-
-
-
-
-   return (
-      <button 
-         className="w-24 h-24 m-2 rounded shadow-lg bg-gray-50 border-2 border-black hover:bg-white focus:bg-white"
-         onClick={() => send('X')}
-      >
-         {getValue(current)}
-      </button>
-   )
+  return (
+    <button
+      disabled={!isEmpty}
+      className={`w-24 h-24 m-2 rounded shadow-lg bg-gray-50 border-2 border-black hover:bg-white focus:bg-white disabled:opacity-25`}
+      onClick={() => takeTurnAction("takeTurn", { data: coordinates })}
+    >
+      {isEmpty ? undefined : value}
+    </button>
+  );
 }
