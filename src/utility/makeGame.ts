@@ -1,8 +1,9 @@
 import makeDroughtTile, { TileStateMachine } from "../gameState/tile";
+import { PathValue } from "./loadStateFromHistory";
 
 export interface InvokableTile {
   src: TileStateMachine;
-  id: string;
+  id: PathValue;
 }
 
 /**
@@ -25,7 +26,7 @@ export default function makeGame(gameSize: number): InvokableTile[][] {
     (subArray: string[], yAxis: number): InvokableTile[] => {
       return subArray.map(
         (_, xAxis: number): InvokableTile => {
-          const id = xAxis.toString() + "-" + yAxis.toString();
+          const id = (xAxis.toString() + "-" + yAxis.toString()) as PathValue;
           return {
             id,
             src: makeDroughtTile([xAxis, yAxis]),

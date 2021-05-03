@@ -1,4 +1,4 @@
-import { createMachine, StateMachine } from "xstate";
+import { createMachine, Machine, StateMachine } from "xstate";
 import { escalate, respond } from "xstate/lib/actions";
 
 interface TileSchema {
@@ -9,22 +9,18 @@ interface TileSchema {
   };
 }
 
-type Event = { type: "X" } | { type: "O" } | { type: "*" };
+export type TileEvent = { type: "X" } | { type: "O" };
 
-export type TileStateMachine = StateMachine<null, TileSchema, Event>;
+export type TileStateMachine = StateMachine<null, TileSchema, TileEvent>;
 
 export default function makeDroughtTile(
   id: [number, number]
 ): TileStateMachine {
   return createMachine({
-    id: id.join(" "), // This will have to be dynamic based on invocation
+    id: id.join("-"),
     initial: "empty",
-
     states: {
       empty: {
-        // after: {
-        //     500: 'X'
-        // },
         on: {
           X: "X",
           O: "O",
@@ -37,16 +33,11 @@ export default function makeDroughtTile(
          * we need this to yell at the parent if it doesn't
          */
         entry: respond("nextTurn"),
-        // So it looks like I don't actually need these, I would just need to capture that error, and then
-        // bubble it up inside the game state on the "load" action
         on: {
           "*": {
-            actions: [
-              escalate({
-                message: `Already at Final X State. Cannot take attempted action for Tile: ${id}`,
-              }),
-              "log",
-            ],
+            actions: escalate({
+              message: `Already at Final X State. Cannot take attempted action for Tile: ${id}`,
+            }),
           },
         },
       },

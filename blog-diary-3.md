@@ -34,3 +34,20 @@ However, I think I would need to do something like `useEffect` or
 ## Tailwind CSS
 
 The opacity effect on the background is absolutely awesome.
+
+## Next Steps
+
+- Figure out how history works and see how I can play and replace the state of the machine
+- Based on perusing the docs it actually seems like they yset this up pretty well for us, so it's just a matter of figuring out how to:
+
+1. abstract it out as a full sequence during the share mode
+2. Load it back in
+3. Attach it to the url.
+4. Can I go backwards and forwards?
+
+There's a bit of a risk here in the sense that because the machine doesn't accept a "who" value, it's assuming the sequence of turns is "ok".
+
+### Potential error states
+
+1. Trying to hit the same machine twice
+2. trying to continue to play when the game has ended (this is probably more simply accomplished with a "check if game has ended" step rather than a "don't end the game")

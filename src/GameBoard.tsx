@@ -1,17 +1,26 @@
 import React from "react";
+import { Interpreter, State } from "xstate";
 import GameButton from "./GameButton";
-import makeGame, { InvokableTile } from "./utility/makeGame";
-import { useMachine } from "@xstate/react";
-import makeGameState from "./gameState";
+import { InvokableTile } from "./utility/makeGame";
+import { GameContext, GameEvent } from "./gameState";
+import { Redirect } from "react-router-dom";
 
-const GAME_BOARD_SIZE = 3;
-
-const gameTiles = makeGame(GAME_BOARD_SIZE);
-const gameBoard = makeGameState(gameTiles.flat());
-export default function GameBoard() {
-  const [currentState, send, service] = useMachine(gameBoard);
-
-  // console.log(currentState);
+export default function GameBoard({
+  gameTiles,
+  currentState,
+  send,
+  service,
+}: {
+  gameTiles: InvokableTile[][];
+  currentState: State<GameContext, GameEvent>;
+  send: Function;
+  service: Interpreter<GameContext, any, GameEvent>;
+}) {
+  // service listen to the state change
+  // Update the link, I think.
+  // Because then I think (hypothesize)
+  // That I should get moving backwards and
+  // forwards for free with the browser
 
   /**
    * Todo:
@@ -21,6 +30,17 @@ export default function GameBoard() {
    * but I'm not sure... Well... I'm not passing them from
    * current state... so maybe not.
    */
+
+  const {
+    context: { startingPlayer, history },
+  } = currentState;
+
+  console.log(startingPlayer);
+  console.log(history);
+
+  if (currentState.done) {
+    return <Redirect to="/end" />;
+  }
 
   return (
     <div className="flex flex-col">
@@ -40,9 +60,6 @@ export default function GameBoard() {
           })}
         </div>
       ))}
-      {currentState.matches("start") && (
-        <button onClick={() => send("pickPlayerTurn")}>Start</button>
-      )}
     </div>
   );
 }
