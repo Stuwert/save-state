@@ -1,4 +1,4 @@
-import { createMachine, Machine, StateMachine } from "xstate";
+import { createMachine, StateMachine } from "xstate";
 import { escalate, respond } from "xstate/lib/actions";
 
 interface TileSchema {

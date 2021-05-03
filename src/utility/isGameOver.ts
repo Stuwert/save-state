@@ -1,10 +1,4 @@
-import {
-  ActorRef,
-  ActorRefFrom,
-  Interpreter,
-  SpawnedActorRef,
-  State,
-} from "xstate";
+import { Interpreter } from "xstate";
 import { TileStateMachine } from "../gameState/tile";
 import { XorO, PathValue } from "./loadStateFromHistory";
 

@@ -1,14 +1,6 @@
 import React from "react";
-import { TileStateMachine } from "./gameState/tile";
-// import { State } from "xstate";
 import { useSelector } from "@xstate/react";
 import { ActorRef } from "@xstate/react/lib/types";
-
-const selectStateValue = (state: any): string => state.value;
-const compareStateValue = (
-  prevStateValue: string,
-  nextStateValue: string
-): boolean => prevStateValue === nextStateValue;
 
 export default function GameButton({
   takeTurnAction,

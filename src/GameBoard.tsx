@@ -48,7 +48,7 @@ export default function GameBoard({
         <div className="flex flex-row justify-center" key={index}>
           {gameRow.map(({ id }: InvokableTile) => {
             const child = service.children.get(id);
-            if (!child) return;
+            if (!child) return <></>;
             return (
               <GameButton
                 takeTurnAction={send}

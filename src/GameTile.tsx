@@ -1,6 +1,4 @@
 import React from "react";
-import { TileStateMachine } from "./gameState/tile";
-// import { State } from "xstate";
 import { useSelector } from "@xstate/react";
 import { ActorRef } from "@xstate/react/lib/types";
 

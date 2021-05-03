@@ -1,4 +1,4 @@
-import { createMachine, Machine, send, StateMachine, sendUpdate } from "xstate";
+import { Machine, send, StateMachine } from "xstate";
 import { isGameOver } from "../utility/isGameOver";
 import { InvokableTile } from "../utility/makeGame";
 
@@ -156,8 +156,6 @@ export default function makeGameState(
         isGameOver: (context, event, { state }) => {
           // @ts-expect-error
           const gameResult = isGameOver(state.children);
-
-          console.log(gameResult);
 
           if (gameResult === false) return false;
 

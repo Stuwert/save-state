@@ -24,4 +24,4 @@ There are three (well 4) big portions of work remaining that I'd like to clean u
 1. Get the share state working. This ended up being a bit more complex than I imagined as it will require me to figure out how to render modals, maybe.
 2. Add tests. Ooof, I let this get out of hand. I have old tests for the gameState code, but nothing recent, and nothing for **any** of the components I made. Gotta test all those game states, side effects, and renders.
 3. Woof does this game look bad. Gotta update it.
-4. Clean up the documentation and write a small article about what I'm trying to do here.
+4. Clean up the documentation and write a small article about what I'm trying to do here. (Oh also organize the directories)
