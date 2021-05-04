@@ -15,7 +15,7 @@ describe("The Game State", () => {
   const droughtTile = makeDroughtTile([0, 0]);
   describe("Success conditions", () => {
     it("Should start at the start of the game", () => {
-      const gameStateMachine = makeGameState({ id: "xTest", src: droughtTile });
+      const gameStateMachine = makeGameState({ id: "0-0", src: droughtTile });
 
       const startingState = gameStateMachine.initialState;
 
@@ -23,7 +23,7 @@ describe("The Game State", () => {
     });
 
     it("Should transition from start to X", () => {
-      const gameStateMachine = makeGameState({ id: "xTest", src: droughtTile });
+      const gameStateMachine = makeGameState({ id: "0-0", src: droughtTile });
 
       const state = gameStateMachine.transition("start", "pickPlayerTurn");
 
@@ -31,7 +31,7 @@ describe("The Game State", () => {
     });
 
     it("Should from X to O on nextTurn", () => {
-      const gameStateMachine = makeGameState({ id: "xTest", src: droughtTile });
+      const gameStateMachine = makeGameState({ id: "0-0", src: droughtTile });
 
       const nextState = gameStateMachine.transition("X", "nextTurn");
 
@@ -39,7 +39,7 @@ describe("The Game State", () => {
     });
 
     it("Should from O to X on nextTurn", () => {
-      const gameStateMachine = makeGameState({ id: "xTest", src: droughtTile });
+      const gameStateMachine = makeGameState({ id: "0-0", src: droughtTile });
 
       const nextState = gameStateMachine.transition("O", "nextTurn");
 
@@ -49,7 +49,7 @@ describe("The Game State", () => {
 
   describe("Should listen to the child machine", () => {
     it("Should transition to the next state when the child is called", (done) => {
-      const gameStateMachine = makeGameState({ id: "xTest", src: droughtTile });
+      const gameStateMachine = makeGameState({ id: "0-0", src: droughtTile });
 
       const gameStateService = interpret(gameStateMachine).onTransition(
         (state) => {
@@ -69,7 +69,7 @@ describe("The Game State", () => {
 
       gameStateService.start();
       gameStateService.send({ type: "pickPlayerTurn" });
-      gameStateService.send({ type: "takeTurn", data: "xTest" });
+      gameStateService.send({ type: "takeTurn", data: "0-0" });
 
       /**
        *
@@ -89,18 +89,20 @@ describe("The Game State", () => {
     it("Should warn or do something if the end step keeps being hit", () => {
       let caughtMessage = "No Error Threw";
       const gameStateMachine = makeGameState({
-        id: "xTest",
+        id: "0-0",
         src: droughtTile,
       });
 
       const gameStateService = interpret(gameStateMachine);
 
+      gameStateService.onEvent((event) => console.log(event));
+
       gameStateService.start();
       gameStateService.send({ type: "pickPlayerTurn" });
-      gameStateService.send({ type: "takeTurn", data: "xTest" });
+      gameStateService.send({ type: "takeTurn", data: "0-0" });
 
       try {
-        gameStateService.send({ type: "takeTurn", data: "xTest" });
+        gameStateService.send({ type: "takeTurn", data: "0-0" });
       } catch ({ message }) {
         caughtMessage = message;
       }

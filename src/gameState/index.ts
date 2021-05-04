@@ -1,6 +1,6 @@
 import { Machine, send, StateMachine } from "xstate";
 import { isGameOver } from "../utility/isGameOver";
-import { InvokableTile } from "../utility/makeGame";
+import makeGame from "../utility/makeGame";
 
 export interface GameSchema {
   context: GameContext;
@@ -36,9 +36,7 @@ export type GameStateStateMachine = StateMachine<
 
 const isMoreThanHalf = () => Math.random() > 0.5;
 
-export default function makeGameState(
-  droughtTileOrMany: InvokableTile | InvokableTile[]
-): GameStateStateMachine {
+export default function makeGameState(): GameStateStateMachine {
   return Machine<GameContext, GameSchema, GameEvent>(
     {
       id: "game",
@@ -49,7 +47,7 @@ export default function makeGameState(
         winner: null,
         winCondition: [],
       },
-      invoke: droughtTileOrMany,
+      invoke: makeGame(3).flat(),
       states: {
         endGame: {
           type: "final",
@@ -83,7 +81,7 @@ export default function makeGameState(
                 send("O", {
                   to: (context: any, event: any) => event.data,
                 }),
-                "recordTurn",
+                // "recordTurnO",
               ],
             },
           },
@@ -105,17 +103,15 @@ export default function makeGameState(
         },
         pickAtRandom: {
           exit: ["recordFirstPlayer"],
-          on: {
-            "": [
-              {
-                target: "X",
-                cond: isMoreThanHalf,
-              },
-              {
-                target: "O",
-              },
-            ],
-          },
+          always: [
+            {
+              target: "X",
+              cond: isMoreThanHalf,
+            },
+            {
+              target: "O",
+            },
+          ],
         },
       },
     },
@@ -133,6 +129,7 @@ export default function makeGameState(
           console.log("Error thrown");
         },
         recordFirstPlayer: (context, event, { state }) => {
+          console.log("Recording first plyer");
           if (state && state.matches("O")) {
             context.startingPlayer = "O";
             return;
@@ -145,8 +142,20 @@ export default function makeGameState(
           throw new Error("Failed to store starting player");
         },
         recordTurn: (context, event, { state }) => {
+          console.log("X");
           if (event.type === "takeTurn") {
             console.log(event);
+            console.log(context);
+            console.log(state);
+            context.history?.push(event.data);
+          }
+        },
+        recordTurnO: (context, event, { state }) => {
+          console.log("O");
+          if (event.type === "takeTurn") {
+            console.log(event);
+            console.log(context);
+            console.log(state);
             context.history?.push(event.data);
           }
         },

@@ -1,5 +1,4 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import CryptoJS from "crypto-js";
 /**
  * 2. Split the segments into turns
  * 3. Take the turns
@@ -40,9 +39,11 @@ type ValidatedArray = [XorO, ...PathValue[]];
 export function validateString(inputFromUser: string): ValidatedArray {
   const [firstValue, ...restOfValues] = inputFromUser.split(":");
 
-  if (firstValue !== "X" && firstValue !== "O") {
+  const ensureCapsFirstValue = firstValue.toUpperCase();
+
+  if (ensureCapsFirstValue !== "X" && ensureCapsFirstValue !== "O") {
     throw new Error(
-      `Invalid Starting Turn, got ${firstValue} instead of X or O`
+      `Invalid Starting Turn, got ${ensureCapsFirstValue} instead of X or O`
     );
   }
 
@@ -74,7 +75,16 @@ export function validateString(inputFromUser: string): ValidatedArray {
     throw new Error(`Invalid Path Values Passed: ${invalidValues.join(" ")}`);
   }
 
-  return [firstValue, ...validatedValues];
+  return [ensureCapsFirstValue, ...validatedValues];
+}
+
+function decryptStringLol(shareLink: string): string {
+  const bytes = CryptoJS.AES.decrypt(shareLink, "bing bong");
+
+  const value = bytes.toString(CryptoJS.enc.Utf8);
+
+  console.log(value);
+  return value;
 }
 
 /**
@@ -86,39 +96,37 @@ export function validateString(inputFromUser: string): ValidatedArray {
  */
 export default function loadStateFromHistory(
   inputString: string,
-  sendToMachine: Function
-): React.ReactElement | string {
+  send: any
+): boolean | string {
+  console.log("**");
+  const [startingValue, ...turns] = validateString(
+    decryptStringLol(inputString)
+  );
   try {
-    const [startingValue, ...turns] = validateString(inputString);
-
-    sendToMachine("start");
+    if (!turns.length) {
+      throw new Error(
+        "There were no turns input, which is the same as starting the game normally"
+      );
+    }
 
     // do the starting Value
-    sendToMachine(`startWith${startingValue}`);
+    // const result = sendToMachine(`startWith${startingValue}`);
+    send.send(`startWith${startingValue}`);
 
     turns.forEach((turn) => {
-      const currentState = sendToMachine("takeTurn", {
-        coordinates: turn.split(""),
+      console.log("**");
+      const currentState = send.send("takeTurn", {
+        data: turn,
       });
 
-      /**
-       * If the game is rewindable,
-       * this would also have to save the navigation
-       * path and return it...
-       */
+      console.log(currentState.value);
 
-      console.log(currentState);
-
-      if (currentState.matches("endState")) {
+      if (currentState.matches("endGame")) {
         throw new Error("This Game Has Already Ended!");
       }
-      // do the turn value
-      // check if game has ended
-      // if game has ended, throw an error
     });
-    const navigationPath = turns.join("/");
 
-    return React.createElement(Link, { to: navigationPath });
+    return true;
   } catch ({ message }) {
     return message;
   }

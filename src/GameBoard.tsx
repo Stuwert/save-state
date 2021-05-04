@@ -1,17 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
+import CryptoJS from "crypto-js";
+
 import { Interpreter, State } from "xstate";
 import GameButton from "./GameButton";
-import { InvokableTile } from "./utility/makeGame";
 import { GameContext, GameEvent } from "./gameState";
 import { Redirect } from "react-router-dom";
+// import { PathValue, XorO } from "./utility/loadStateFromHistory";
+
+// TODO: Update these to
+function generateShareLink(
+  startingPlayer: string,
+  history: string[],
+  setShareCode: Function
+): undefined {
+  const stringToCrypt = [startingPlayer, ...history].join(":");
+  const stringToShare = CryptoJS.AES.encrypt(
+    stringToCrypt,
+    "bing bong"
+  ).toString();
+  setShareCode(stringToShare);
+
+  return undefined;
+}
 
 export default function GameBoard({
-  gameTiles,
   currentState,
   send,
   service,
 }: {
-  gameTiles: InvokableTile[][];
   currentState: State<GameContext, GameEvent>;
   send: Function;
   service: Interpreter<GameContext, any, GameEvent>;
@@ -31,12 +47,11 @@ export default function GameBoard({
    * current state... so maybe not.
    */
 
+  const [shareCode, setShareCode] = useState("");
+
   const {
     context: { startingPlayer, history },
   } = currentState;
-
-  console.log(startingPlayer);
-  console.log(history);
 
   if (currentState.done) {
     return <Redirect to="/end" />;
@@ -44,9 +59,10 @@ export default function GameBoard({
 
   return (
     <div className="flex flex-col">
-      {gameTiles.map((gameRow, index) => (
-        <div className="flex flex-row justify-center" key={index}>
-          {gameRow.map(({ id }: InvokableTile) => {
+      {[0, 1, 2].map((gameRow) => (
+        <div className="flex flex-row justify-center" key={gameRow}>
+          {[0, 1, 2].map((gameCol) => {
+            const id = [gameRow, gameCol].join("-");
             const child = service.children.get(id);
             if (!child) return <></>;
             return (
@@ -60,6 +76,16 @@ export default function GameBoard({
           })}
         </div>
       ))}
+      <p>{shareCode}</p>
+      {shareCode === "" && (
+        <button
+          onClick={() =>
+            generateShareLink(startingPlayer, history, setShareCode)
+          }
+        >
+          Generate Share Link
+        </button>
+      )}
     </div>
   );
 }

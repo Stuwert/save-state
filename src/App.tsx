@@ -4,16 +4,19 @@ import GameBoard from "./GameBoard";
 import Intro from "./Intro";
 import { useMachine } from "@xstate/react";
 import makeGameState from "./gameState";
-import makeGame from "./utility/makeGame";
 import EndGame from "./EndGame";
+import LoadGame from "./LoadGame";
 
-const GAME_BOARD_SIZE = 3;
-
-const gameTiles = makeGame(GAME_BOARD_SIZE);
-const gameBoard = makeGameState(gameTiles.flat());
+const gameState = makeGameState();
 
 function App() {
-  const [currentState, send, service] = useMachine(gameBoard);
+  console.log("***");
+  const [currentState, send, service] = useMachine(gameState, {
+    devTools: true,
+  });
+  service.onEvent((thing) => console.log(thing));
+
+  console.log(currentState);
 
   return (
     <div className="flex flex-col">
@@ -23,20 +26,18 @@ function App() {
         <Route exact path="/">
           <Intro send={send} />
         </Route>
+        <Route path="/load/:id">
+          <LoadGame send={service} />
+        </Route>
         <Route path="/game">
           <GameBoard
             currentState={currentState}
-            gameTiles={gameTiles}
             send={send}
             service={service}
           />
         </Route>
         <Route path="/end">
-          <EndGame
-            gameTiles={gameTiles}
-            currentState={currentState}
-            service={service}
-          />
+          <EndGame currentState={currentState} service={service} />
         </Route>
       </Router>
     </div>
