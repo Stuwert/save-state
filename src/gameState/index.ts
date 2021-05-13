@@ -81,7 +81,7 @@ export default function makeGameState(): GameStateStateMachine {
                 send("O", {
                   to: (context: any, event: any) => event.data,
                 }),
-                // "recordTurnO",
+                "recordTurn",
               ],
             },
           },
@@ -150,15 +150,6 @@ export default function makeGameState(): GameStateStateMachine {
             context.history?.push(event.data);
           }
         },
-        recordTurnO: (context, event, { state }) => {
-          console.log("O");
-          if (event.type === "takeTurn") {
-            console.log(event);
-            console.log(context);
-            console.log(state);
-            context.history?.push(event.data);
-          }
-        },
         recordAction: (context, event) => {},
       },
       guards: {
@@ -167,6 +158,10 @@ export default function makeGameState(): GameStateStateMachine {
           const gameResult = isGameOver(state.children);
 
           if (gameResult === false) return false;
+          if (gameResult === "draw") {
+            context.winner = null;
+            return true;
+          }
 
           const { winner, winCondition } = gameResult;
 

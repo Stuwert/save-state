@@ -6,7 +6,9 @@ module.exports = {
   },
   variants: {
     extend: {
-      opacity: ["disabled"],
+      backgroundColor: ["disabled"],
+      borderWidth: ["disabled"],
+      boxShadow: ["disabled"],
     },
   },
   plugins: [],

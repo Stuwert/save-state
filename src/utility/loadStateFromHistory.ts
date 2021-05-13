@@ -83,7 +83,7 @@ function decryptStringLol(shareLink: string): string {
 
   const value = bytes.toString(CryptoJS.enc.Utf8);
 
-  console.log(value);
+  console.log({ stringToDecrypt: value });
   return value;
 }
 

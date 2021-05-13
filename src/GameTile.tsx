@@ -14,17 +14,14 @@ export default function GameButton({
 
   const isEmpty = value === "empty";
 
-  let background = "bg-gray-50";
+  let modifier = "";
   if (isPartOfWinningCoordinates) {
-    background = "bg-red-100";
+    modifier = "winningTile";
   }
 
   return (
-    <button
-      disabled
-      className={`w-24 h-24 m-2 rounded shadow-lg ${background} border-2 border-black focus:bg-white opacity-35`}
-    >
+    <div className={`pt-2 text-center gameTile ${modifier}`}>
       {isEmpty ? undefined : value}
-    </button>
+    </div>
   );
 }

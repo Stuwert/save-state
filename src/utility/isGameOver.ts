@@ -9,7 +9,8 @@ export function isGameOver(allChildren: {
       winner: XorO;
       winCondition: PathValue[];
     }
-  | false {
+  | false
+  | "draw" {
   // check all rows
   // check all columns
   // check diagonals
@@ -60,6 +61,20 @@ export function isGameOver(allChildren: {
   }
 
   if (winner === null || winCondition.length === 0) {
+    const remainingMoves = Object.values(allChildren).reduce(
+      (movesRemaining, child) => {
+        if (child.state.value === "empty") return movesRemaining + 1;
+        return movesRemaining;
+      },
+      0
+    );
+
+    console.log(remainingMoves);
+
+    if (!remainingMoves) {
+      return "draw";
+    }
+
     return false;
   }
 

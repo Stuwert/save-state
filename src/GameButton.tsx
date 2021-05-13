@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "@xstate/react";
 import { ActorRef } from "@xstate/react/lib/types";
 
@@ -13,15 +13,19 @@ export default function GameButton({
 }) {
   const value = useSelector(tileStateMachine, (state) => state.value);
 
-  const isEmpty = value === "empty";
+  // console.log(value);
+
+  // const [currentValue, setValue] = useState(value);
 
   return (
     <button
-      disabled={!isEmpty}
-      className={`w-24 h-24 m-2 rounded shadow-lg bg-gray-50 border-2 border-black hover:bg-white focus:bg-white disabled:opacity-25`}
+      disabled={value !== "empty"}
+      className="gameTile activeTile"
       onClick={() => takeTurnAction("takeTurn", { data: coordinates })}
+      // onMouseEnter={() => setValue("X")}
+      // onMouseLeave={() => setValue(value)}
     >
-      {isEmpty ? undefined : value}
+      {value === "empty" ? undefined : value}
     </button>
   );
 }

@@ -11,12 +11,11 @@ export default function EndGame({
   service: Interpreter<GameContext, any, GameEvent>;
 }) {
   const {
-    context: { winCondition },
+    context: { winCondition, winner },
   } = currentState;
 
   return (
-    <div className="flex flex-col">
-      <h1>The Game Is Over</h1>
+    <div className="flex flex-col mt-8">
       {[0, 1, 2].map((gameRow) => (
         <div className="flex flex-row justify-center" key={gameRow}>
           {[0, 1, 2].map((gameCol) => {
@@ -33,6 +32,8 @@ export default function EndGame({
           })}
         </div>
       ))}
+      <h1 className="text-center text-4xl">Game Over</h1>
+      {winner ? <p>{winner} Wins!</p> : <p>Draw</p>}
     </div>
   );
 }

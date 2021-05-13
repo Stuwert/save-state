@@ -5,6 +5,7 @@ import { Interpreter, State } from "xstate";
 import GameButton from "./GameButton";
 import { GameContext, GameEvent } from "./gameState";
 import { Redirect } from "react-router-dom";
+import { useService } from "@xstate/react";
 // import { PathValue, XorO } from "./utility/loadStateFromHistory";
 
 // TODO: Update these to
@@ -14,6 +15,8 @@ function generateShareLink(
   setShareCode: Function
 ): undefined {
   const stringToCrypt = [startingPlayer, ...history].join(":");
+
+  console.log({ stringToCrypt });
   const stringToShare = CryptoJS.AES.encrypt(
     stringToCrypt,
     "bing bong"
@@ -32,6 +35,7 @@ export default function GameBoard({
   send: Function;
   service: Interpreter<GameContext, any, GameEvent>;
 }) {
+  const [state] = useService(service);
   // service listen to the state change
   // Update the link, I think.
   // Because then I think (hypothesize)
@@ -51,14 +55,14 @@ export default function GameBoard({
 
   const {
     context: { startingPlayer, history },
-  } = currentState;
+  } = state;
 
   if (currentState.done) {
     return <Redirect to="/end" />;
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mt-8">
       {[0, 1, 2].map((gameRow) => (
         <div className="flex flex-row justify-center" key={gameRow}>
           {[0, 1, 2].map((gameCol) => {

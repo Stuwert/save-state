@@ -5,14 +5,36 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.modal {
+  transform: translate(-50%, -50%);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 60;
+}
+
+@layer components {
+  .gameTile {
+    @apply w-24 h-24 m-2 rounded border-4 border-black text-7xl pb-1 font-bold;
+  }
+
+  .activeTile {
+    @apply bg-gray-500 shadow-lg focus:bg-white hover:bg-white disabled:bg-white disabled:border-0 disabled:shadow-none text-red-300;
+  }
+
+  .winningTile {
+    @apply bg-red-300 text-white;
+  }
 }

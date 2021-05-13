@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import GameBoard from "./GameBoard";
-import Intro from "./Intro";
+import Intro from "./Intro/index";
 import { useMachine } from "@xstate/react";
 import makeGameState from "./gameState";
 import EndGame from "./EndGame";
@@ -14,14 +14,9 @@ function App() {
   const [currentState, send, service] = useMachine(gameState, {
     devTools: true,
   });
-  service.onEvent((thing) => console.log(thing));
-
-  console.log(currentState);
 
   return (
-    <div className="flex flex-col">
-      <h1 className="text-xl self-center">Tic Tac Toe</h1>
-
+    <div>
       <Router>
         <Route exact path="/">
           <Intro send={send} />

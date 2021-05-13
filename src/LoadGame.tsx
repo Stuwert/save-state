@@ -9,7 +9,9 @@ export function LoadGame({ send }: { send: any }) {
   );
 
   useEffect(() => {
-    const result = loadStateFromHistory(id, send);
+    const unencodedId = decodeURI(id).replace("%2F", "/").trim();
+    console.log(unencodedId);
+    const result = loadStateFromHistory(unencodedId, send);
     setLoadResult(result);
   }, [id, send]);
 
