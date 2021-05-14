@@ -36,6 +36,7 @@ export default function GameBoard({
   service: Interpreter<GameContext, any, GameEvent>;
 }) {
   const [state] = useService(service);
+  console.log(state);
   // service listen to the state change
   // Update the link, I think.
   // Because then I think (hypothesize)
@@ -75,6 +76,7 @@ export default function GameBoard({
                 key={id}
                 tileStateMachine={child}
                 coordinates={id}
+                currentTurn={state.value}
               />
             );
           })}
