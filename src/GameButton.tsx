@@ -26,14 +26,10 @@ export default function GameButton({
     displayValue = value;
   }
 
-  // console.log(value);
-
-  // const [currentValue, setValue] = useState(value);
-
   return (
     <button
       disabled={value !== "empty"}
-      className="gameTile activeTile"
+      className="gameTile activeTile focus:outline-none"
       onClick={() => takeTurnAction("takeTurn", { data: coordinates })}
       onMouseEnter={() => setHoverValue(currentTurn)}
       onMouseLeave={() => setHoverValue(null)}

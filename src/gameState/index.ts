@@ -120,14 +120,6 @@ export default function makeGameState(): GameStateStateMachine {
         logAction: (context, event) => {
           console.log("Action logged");
         },
-        logError: (context, event) => {
-          /**
-           * Todo: Actually make this error.
-           *
-           * This will want to block the rendering of the game
-           */
-          console.log("Error thrown");
-        },
         recordFirstPlayer: (context, event, { state }) => {
           console.log("Recording first plyer");
           if (state && state.matches("O")) {
@@ -142,11 +134,7 @@ export default function makeGameState(): GameStateStateMachine {
           throw new Error("Failed to store starting player");
         },
         recordTurn: (context, event, { state }) => {
-          console.log("X");
           if (event.type === "takeTurn") {
-            console.log(event);
-            console.log(context);
-            console.log(state);
             context.history?.push(event.data);
           }
         },

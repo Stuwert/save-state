@@ -6,6 +6,7 @@ import GameButton from "./GameButton";
 import { GameContext, GameEvent } from "./gameState";
 import { Redirect } from "react-router-dom";
 import { useService } from "@xstate/react";
+import { Modal } from "./components/Modal";
 // import { PathValue, XorO } from "./utility/loadStateFromHistory";
 
 // TODO: Update these to
@@ -14,6 +15,10 @@ function generateShareLink(
   history: string[],
   setShareCode: Function
 ): undefined {
+  // startingPlayer
+  // single or multi player
+  // robot player
+
   const stringToCrypt = [startingPlayer, ...history].join(":");
 
   console.log({ stringToCrypt });
@@ -21,6 +26,7 @@ function generateShareLink(
     stringToCrypt,
     "bing bong"
   ).toString();
+
   setShareCode(stringToShare);
 
   return undefined;
@@ -53,10 +59,16 @@ export default function GameBoard({
    */
 
   const [shareCode, setShareCode] = useState("");
+  const [shouldShow, setShow] = useState(false);
 
   const {
+    value,
     context: { startingPlayer, history },
   } = state;
+
+  if (value === "start") {
+    return <Redirect to="/" />;
+  }
 
   if (currentState.done) {
     return <Redirect to="/end" />;
@@ -82,16 +94,20 @@ export default function GameBoard({
           })}
         </div>
       ))}
-      <p>{shareCode}</p>
-      {shareCode === "" && (
+      <Modal show={shouldShow} close={() => setShow(false)}>
+        {shareCode}
+      </Modal>
+      <div className="text-center">
         <button
-          onClick={() =>
-            generateShareLink(startingPlayer, history, setShareCode)
-          }
+          onClick={() => {
+            generateShareLink(startingPlayer, history, setShareCode);
+            setShow(true);
+          }}
+          className="simpleButton"
         >
           Generate Share Link
         </button>
-      )}
+      </div>
     </div>
   );
 }

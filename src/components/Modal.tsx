@@ -14,10 +14,14 @@ export function Modal({
   const target = usePortal("modal");
   const Modal = (
     <>
-      <div className="modal bg-white">
-        <button onClick={close}>X</button>
-        <h1>Modal heading</h1>
+      <div className="modal bg-white flex flex-col p-10 pt-0">
         {children}
+        <button
+          className="simpleButton bg-red-300 hover:bg-red-100 text-black"
+          onClick={close}
+        >
+          Close
+        </button>
       </div>
       <div
         className="fixed top-0 left-0 w-full h-full z-50 bg-black bg-opacity-50"

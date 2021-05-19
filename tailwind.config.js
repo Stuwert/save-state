@@ -9,6 +9,7 @@ module.exports = {
       backgroundColor: ["disabled"],
       borderWidth: ["disabled"],
       boxShadow: ["disabled"],
+      opacity: ["disabled"],
     },
   },
   plugins: [],

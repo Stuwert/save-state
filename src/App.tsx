@@ -19,7 +19,7 @@ function App() {
     <div>
       <Router>
         <Route exact path="/">
-          <Intro send={send} />
+          <Intro send={send} service={service} currentState={currentState} />
         </Route>
         <Route path="/load/:id">
           <LoadGame send={service} />

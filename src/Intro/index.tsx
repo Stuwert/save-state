@@ -1,14 +1,28 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Interpreter, State } from "xstate";
 import { Modal } from "../components/Modal";
+import { GameContext, GameEvent } from "../gameState";
 import HoverReveal from "./HoverReveal";
 
-export default function Intro({ send }: { send: Function }) {
+export default function Intro({
+  send,
+  service,
+  currentState,
+}: {
+  send: Function;
+  service: Interpreter<GameContext, any, GameEvent>;
+  currentState: State<GameContext, GameEvent>;
+}) {
   const [stateValue, setStateValue] = useState("");
   const [shouldShow, setShow] = useState(false);
 
   const encodedStateValue = encodeURI(stateValue).replace("/", "%2F");
   console.log(encodedStateValue);
+
+  if (currentState.value !== "start") {
+    service.start();
+  }
 
   return (
     <div className="flex flex-col justify-center">
@@ -30,21 +44,28 @@ export default function Intro({ send }: { send: Function }) {
         </div>
       </div>
       <Modal show={shouldShow} close={() => setShow(false)}>
+        <h2>Start A Game From a Share Link</h2>
         <input onChange={(e) => setStateValue(e.target.value)} />
-        <button className="border-black">
-          <Link to={`/load/${encodedStateValue}`}>Start Game From History</Link>
+        <button className="simpleButton">
+          <Link to={`/load/${encodedStateValue}`}>Start</Link>
         </button>
       </Modal>
       <div className="text-center mt-4">
-        <button onClick={() => send("pickPlayerTurn")}>
-          <Link to="/game">New Game</Link>
+        <button onClick={() => send("pickPlayerTurn")} className="simpleButton">
+          <Link to="/game">New Single Player Game</Link>
+        </button>
+      </div>
+      <div className="text-center mt-4">
+        <button
+          disabled
+          onClick={() => send("pickPlayerTurn")}
+          className="simpleButton"
+        >
+          <Link to="/game">New Two Player Game</Link>
         </button>
       </div>
       <div className="text-center">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-          onClick={() => setShow(true)}
-        >
+        <button className="simpleButton" onClick={() => setShow(true)}>
           {" "}
           Start From Share
         </button>
