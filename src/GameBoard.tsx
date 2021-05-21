@@ -27,6 +27,12 @@ function generateShareLink(
     "bing bong"
   ).toString();
 
+  try {
+    navigator.clipboard.writeText(stringToShare);
+  } catch (error) {
+    // do nothing
+  }
+
   setShareCode(stringToShare);
 
   return undefined;
@@ -95,7 +101,12 @@ export default function GameBoard({
         </div>
       ))}
       <Modal show={shouldShow} close={() => setShow(false)}>
-        {shareCode}
+        <h1>Share Link</h1>
+        <p>
+          Share this with your friends so they can try the game from where
+          you're at.
+        </p>
+        <p id="shareLink">{shareCode}</p>
       </Modal>
       <div className="text-center">
         <button
