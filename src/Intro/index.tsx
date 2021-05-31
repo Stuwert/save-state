@@ -5,14 +5,14 @@ import { Modal } from "../components/Modal";
 import { GameContext, GameEvent } from "../gameState";
 import HoverReveal from "./HoverReveal";
 
-const pickRobot = (send: Function) => (): void => {
+const pickRobot = (send: Function) => () => {
   let robot = "X";
 
   if (Math.random() > 0.5) {
     robot = "O";
   }
 
-  send("pickPlayerTurn", { robot });
+  return send("pickPlayerTurn", { robot });
 };
 
 export default function Intro({

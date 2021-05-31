@@ -34,11 +34,6 @@ function pickCoordinates(history: string[]): string {
 
 export default function takeAiAction(robotTurn: string) {
   return (context: GameContext, event: GameEvent) => {
-    console.log({
-      robot: context.robot,
-      startingPlayer: context.startingPlayer,
-      robotTurn,
-    });
     if (robotTurn === context.robot) {
       const coordinates = pickCoordinates(context.history);
       /**
