@@ -1,27 +1,27 @@
 import React, { useState } from "react";
 import CryptoJS from "crypto-js";
 
-import { Interpreter, State } from "xstate";
 import GameButton from "./GameButton";
-import { GameContext, GameEvent } from "./gameState";
+import { GameService } from "./gameState";
 import { Redirect } from "react-router-dom";
 import { useService } from "@xstate/react";
 import { Modal } from "./components/Modal";
+import { Robot } from "./utility/loadStateFromHistory";
 // import { PathValue, XorO } from "./utility/loadStateFromHistory";
 
 // TODO: Update these to
 function generateShareLink(
+  robot: Robot,
   startingPlayer: string,
   history: string[],
   setShareCode: Function
 ): undefined {
-  // startingPlayer
-  // single or multi player
   // robot player
+  // single or multi player
+  // startingPlayer
 
-  const stringToCrypt = [startingPlayer, ...history].join(":");
+  const stringToCrypt = [robot, startingPlayer, ...history].join(":");
 
-  console.log({ stringToCrypt });
   const stringToShare = CryptoJS.AES.encrypt(
     stringToCrypt,
     "bing bong"
@@ -38,17 +38,8 @@ function generateShareLink(
   return undefined;
 }
 
-export default function GameBoard({
-  currentState,
-  send,
-  service,
-}: {
-  currentState: State<GameContext, GameEvent>;
-  send: Function;
-  service: Interpreter<GameContext, any, GameEvent>;
-}) {
-  const [state] = useService(service);
-  console.log(state);
+export default function GameBoard({ service }: { service: GameService }) {
+  const [currentState, send] = useService(service);
   // service listen to the state change
   // Update the link, I think.
   // Because then I think (hypothesize)
@@ -69,8 +60,8 @@ export default function GameBoard({
 
   const {
     value,
-    context: { startingPlayer, history },
-  } = state;
+    context: { startingPlayer, history, robot },
+  } = currentState;
 
   if (value === "start") {
     return <Redirect to="/" />;
@@ -90,11 +81,11 @@ export default function GameBoard({
             if (!child) return <></>;
             return (
               <GameButton
-                takeTurnAction={send}
                 key={id}
                 tileStateMachine={child}
                 coordinates={id}
-                currentTurn={state.value}
+                currentTurn={currentState.value}
+                send={send}
               />
             );
           })}
@@ -111,7 +102,7 @@ export default function GameBoard({
       <div className="text-center">
         <button
           onClick={() => {
-            generateShareLink(startingPlayer, history, setShareCode);
+            generateShareLink(robot, startingPlayer, history, setShareCode);
             setShow(true);
           }}
           className="simpleButton"

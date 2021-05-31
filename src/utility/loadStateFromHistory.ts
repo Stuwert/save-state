@@ -10,18 +10,18 @@ import CryptoJS from "crypto-js";
  * TODO: Figure out how to generate the type based on the array.
  */
 
-const validValues = [
+export const validValues = [
   "0-0",
   "0-1",
   "0-2",
   "1-0",
   "1-1",
   "1-2",
-  "1-3",
   "2-0",
   "2-1",
   "2-2",
 ];
+export type Robot = XorO | undefined;
 export type XorO = "X" | "O";
 export type PathValue =
   | "0-0"
@@ -34,17 +34,22 @@ export type PathValue =
   | "2-0"
   | "2-1"
   | "2-2";
-type ValidatedArray = [XorO, ...PathValue[]];
+type ValidatedArray = [Robot, XorO, ...PathValue[]];
 
 export function validateString(inputFromUser: string): ValidatedArray {
-  const [firstValue, ...restOfValues] = inputFromUser.split(":");
+  const [firstValue, secondValue, ...restOfValues] = inputFromUser.split(":");
 
-  const ensureCapsFirstValue = firstValue.toUpperCase();
+  const ensureCapsSecondValue = secondValue.toUpperCase();
 
-  if (ensureCapsFirstValue !== "X" && ensureCapsFirstValue !== "O") {
+  if (ensureCapsSecondValue !== "X" && ensureCapsSecondValue !== "O") {
     throw new Error(
-      `Invalid Starting Turn, got ${ensureCapsFirstValue} instead of X or O`
+      `Invalid Starting Turn, got ${ensureCapsSecondValue} instead of X or O`
     );
+  }
+
+  let robot: Robot;
+  if (firstValue === "X" || firstValue === "O") {
+    robot = firstValue;
   }
 
   const { validatedValues, invalidValues } = restOfValues.reduce<{
@@ -75,7 +80,7 @@ export function validateString(inputFromUser: string): ValidatedArray {
     throw new Error(`Invalid Path Values Passed: ${invalidValues.join(" ")}`);
   }
 
-  return [ensureCapsFirstValue, ...validatedValues];
+  return [robot, ensureCapsSecondValue, ...validatedValues];
 }
 
 function decryptStringLol(shareLink: string): string {
@@ -83,7 +88,6 @@ function decryptStringLol(shareLink: string): string {
 
   const value = bytes.toString(CryptoJS.enc.Utf8);
 
-  console.log({ stringToDecrypt: value });
   return value;
 }
 
@@ -98,8 +102,7 @@ export default function loadStateFromHistory(
   inputString: string,
   send: any
 ): boolean | string {
-  console.log("**");
-  const [startingValue, ...turns] = validateString(
+  const [robotValue, startingValue, ...turns] = validateString(
     decryptStringLol(inputString)
   );
   try {
@@ -114,17 +117,16 @@ export default function loadStateFromHistory(
     send.send(`startWith${startingValue}`);
 
     turns.forEach((turn) => {
-      console.log("**");
       const currentState = send.send("takeTurn", {
         data: turn,
       });
-
-      console.log(currentState.value);
 
       if (currentState.matches("endGame")) {
         throw new Error("This Game Has Already Ended!");
       }
     });
+
+    send.send("setRobotValue", { robot: robotValue });
 
     return true;
   } catch ({ message }) {

@@ -69,8 +69,6 @@ export function isGameOver(allChildren: {
       0
     );
 
-    console.log(remainingMoves);
-
     if (!remainingMoves) {
       return "draw";
     }

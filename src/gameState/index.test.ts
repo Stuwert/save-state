@@ -95,8 +95,6 @@ describe("The Game State", () => {
 
       const gameStateService = interpret(gameStateMachine);
 
-      gameStateService.onEvent((event) => console.log(event));
-
       gameStateService.start();
       gameStateService.send({ type: "pickPlayerTurn" });
       gameStateService.send({ type: "takeTurn", data: "0-0" });

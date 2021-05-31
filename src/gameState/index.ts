@@ -1,6 +1,17 @@
-import { Machine, send, StateMachine } from "xstate";
+import {
+  Interpreter,
+  Machine,
+  send,
+  State,
+  StateMachine,
+  actions,
+} from "xstate";
 import { isGameOver } from "../utility/isGameOver";
+import { Robot, XorO } from "../utility/loadStateFromHistory";
 import makeGame from "../utility/makeGame";
+import takeAiAction from "./quoteunquoteai";
+
+const { pure, assign } = actions;
 
 export interface GameSchema {
   context: GameContext;
@@ -16,6 +27,7 @@ export interface GameSchema {
 export interface GameContext {
   startingPlayer: string;
   history: string[]; // This could actually be that path array
+  robot?: XorO;
   winner: string | null; // this could also be X or Y
   winCondition?: string[];
 }
@@ -23,15 +35,30 @@ export interface GameContext {
 export type GameEvent =
   | { type: "nextTurn" }
   | { type: "takeTurn"; data: string }
-  | { type: "pickPlayerTurn" }
+  | { type: "pickPlayerTurn"; robot: XorO }
   | { type: "startWithX" }
   | { type: "startWithO" }
+  | { type: "setRobotValue"; robot: Robot }
   | { type: "" };
 
 export type GameStateStateMachine = StateMachine<
   GameContext,
   GameSchema,
   GameEvent
+>;
+
+export type GameService = Interpreter<
+  GameContext,
+  any,
+  GameEvent,
+  { value: any; context: GameContext }
+>;
+
+export type GameState = State<
+  GameContext,
+  GameEvent,
+  any,
+  { value: any; context: GameContext }
 >;
 
 const isMoreThanHalf = () => Math.random() > 0.5;
@@ -54,7 +81,8 @@ export default function makeGameState(): GameStateStateMachine {
         },
         X: {
           // figure out how to record coordinates
-          //
+          // @ts-ignore
+          entry: pure(takeAiAction("X")),
           on: {
             nextTurn: [
               { target: "endGame", cond: "isGameOver" },
@@ -68,9 +96,14 @@ export default function makeGameState(): GameStateStateMachine {
                 "recordTurn",
               ],
             },
+            setRobotValue: {
+              actions: "setRobot",
+            },
           },
         },
         O: {
+          // @ts-ignore
+          entry: pure(takeAiAction("O")),
           on: {
             nextTurn: [
               { target: "endGame", cond: "isGameOver" },
@@ -84,20 +117,24 @@ export default function makeGameState(): GameStateStateMachine {
                 "recordTurn",
               ],
             },
+            setRobotValue: {
+              actions: "setRobot",
+            },
           },
         },
         start: {
           on: {
             pickPlayerTurn: {
               target: "pickAtRandom",
+              actions: ["setRobot"],
             },
             startWithX: {
               target: "X",
-              actions: ["recordFirstPlayer"],
+              actions: ["recordFirstPlayer", "setRobot"],
             },
             startWithO: {
               target: "O",
-              actions: ["recordFirstPlayer"],
+              actions: ["recordFirstPlayer", "setRobot"],
             },
           },
         },
@@ -117,11 +154,7 @@ export default function makeGameState(): GameStateStateMachine {
     },
     {
       actions: {
-        logAction: (context, event) => {
-          console.log("Action logged");
-        },
         recordFirstPlayer: (context, event, { state }) => {
-          console.log("Recording first plyer");
           if (state && state.matches("O")) {
             context.startingPlayer = "O";
             return;
@@ -138,7 +171,17 @@ export default function makeGameState(): GameStateStateMachine {
             context.history?.push(event.data);
           }
         },
-        recordAction: (context, event) => {},
+        setRobot: assign({
+          robot: (context, event) => {
+            if (
+              event.type === "pickPlayerTurn" ||
+              event.type === "setRobotValue"
+            ) {
+              return event.robot;
+            }
+            return context.robot;
+          },
+        }),
       },
       guards: {
         isGameOver: (context, event, { state }) => {

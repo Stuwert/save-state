@@ -10,12 +10,9 @@ export function LoadGame({ send }: { send: any }) {
 
   useEffect(() => {
     const unencodedId = decodeURI(id).replace("%2F", "/").trim();
-    console.log(unencodedId);
     const result = loadStateFromHistory(unencodedId, send);
     setLoadResult(result);
   }, [id, send]);
-
-  console.log("load game");
 
   if (loadResult === true) {
     return <Redirect to="/game" />;

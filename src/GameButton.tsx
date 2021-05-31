@@ -3,17 +3,19 @@ import { useSelector } from "@xstate/react";
 import { ActorRef } from "@xstate/react/lib/types";
 import { StateValue } from "xstate";
 
-export default function GameButton({
-  takeTurnAction,
+function GameButton({
   coordinates,
   tileStateMachine,
   currentTurn,
+  send,
 }: {
-  takeTurnAction: Function; // There's a lot of complicated typing under the hood already being handled by the send function
   tileStateMachine: ActorRef<any, any>;
   coordinates: string;
   currentTurn: StateValue;
+  send: Function;
 }) {
+  // console.log("hits");
+
   const value = useSelector(tileStateMachine, (state) => state.value);
   const [hoverValue, setHoverValue] = useState<StateValue | null>(null);
 
@@ -30,7 +32,7 @@ export default function GameButton({
     <button
       disabled={value !== "empty"}
       className="gameTile activeTile focus:outline-none"
-      onClick={() => takeTurnAction("takeTurn", { data: coordinates })}
+      onClick={() => send("takeTurn", { data: coordinates })}
       onMouseEnter={() => setHoverValue(currentTurn)}
       onMouseLeave={() => setHoverValue(null)}
     >
@@ -38,3 +40,8 @@ export default function GameButton({
     </button>
   );
 }
+
+export default GameButton;
+// I'm pretty sure this should work like I expect
+// but something is going wrong when it gets memoized
+// export default React.memo(GameButton);

@@ -6,7 +6,6 @@ export default function GameButton({
   tileStateMachine,
   isPartOfWinningCoordinates,
 }: {
-  takeTurnAction?: Function;
   tileStateMachine: ActorRef<any, any>;
   isPartOfWinningCoordinates?: boolean;
 }) {

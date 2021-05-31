@@ -10,7 +10,6 @@ import LoadGame from "./LoadGame";
 const gameState = makeGameState();
 
 function App() {
-  console.log("***");
   const [currentState, send, service] = useMachine(gameState, {
     devTools: true,
   });
@@ -25,11 +24,7 @@ function App() {
           <LoadGame send={service} />
         </Route>
         <Route path="/game">
-          <GameBoard
-            currentState={currentState}
-            send={send}
-            service={service}
-          />
+          <GameBoard service={service} />
         </Route>
         <Route path="/end">
           <EndGame currentState={currentState} service={service} />

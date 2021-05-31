@@ -16,6 +16,9 @@ export default function EndGame({
 
   return (
     <div className="flex flex-col mt-8">
+      <h1 className="text-center text-4xl mb-4">
+        Game Over - {winner ? `${winner} Wins` : "Draw"}
+      </h1>
       {[0, 1, 2].map((gameRow) => (
         <div className="flex flex-row justify-center" key={gameRow}>
           {[0, 1, 2].map((gameCol) => {
@@ -32,8 +35,6 @@ export default function EndGame({
           })}
         </div>
       ))}
-      <h1 className="text-center text-4xl">Game Over</h1>
-      {winner ? <p>{winner} Wins!</p> : <p>Draw</p>}
     </div>
   );
 }

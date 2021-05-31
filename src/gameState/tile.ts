@@ -22,8 +22,8 @@ export default function makeDroughtTile(
     states: {
       empty: {
         on: {
-          X: "X",
-          O: "O",
+          X: { target: "X", actions: ["test"] },
+          O: { target: "O", actions: ["test"] },
         },
       },
       X: {
