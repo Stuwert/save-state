@@ -30,6 +30,7 @@ export default function Intro({
   const encodedStateValue = encodeURI(stateValue).replace("/", "%2F");
 
   if (currentState.value !== "start") {
+    service.stop();
     service.start();
   }
 
